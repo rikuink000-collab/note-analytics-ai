@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f8fc">
+<title>note Analytics AI</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#172033;--muted:#687386;--line:#e5e9f1;--blue:#356ae6;--blue2:#eaf0ff;--teal:#1b9b8a;--gold:#f2b544;--red:#d95757;--shadow:0 8px 28px rgba(25,40,80,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif;line-height:1.55}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:10px 14px;font-weight:700;background:var(--blue);color:#fff}button.secondary{background:#eef1f7;color:var(--ink)}button.danger{background:#fff0f0;color:#b52e2e}button.small{padding:6px 10px;font-size:12px;border-radius:9px}
+header{background:linear-gradient(120deg,#172a63,#356ae6);color:#fff;padding:24px 18px 28px}header .wrap,main{max-width:1100px;margin:auto}header .eyebrow{font-size:12px;letter-spacing:.12em;opacity:.8;font-weight:800}header h1{margin:5px 0;font-size:clamp(24px,5vw,34px)}header p{margin:0;color:#e2e9ff;font-size:14px}.top-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.top-actions button{background:#fff;color:#2349a0}.top-actions button.secondary{background:#dce6ff;color:#1b3e91}
+nav{display:flex;gap:8px;overflow:auto;padding:12px 16px;max-width:1100px;margin:auto}nav button{white-space:nowrap;background:transparent;color:var(--muted);border:1px solid transparent}nav button.active{background:#fff;color:var(--blue);border-color:#dce4fb;box-shadow:var(--shadow)}
+main{padding:8px 16px 42px}.view{display:none}.view.active{display:block}.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:12px 0 18px}.section-head h2{font-size:22px;margin:0}.section-head p{margin:4px 0;color:var(--muted);font-size:13px}
+.grid{display:grid;gap:14px}.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);min-width:0}.metric-label{color:var(--muted);font-size:13px;font-weight:700}.metric-value{font-size:30px;font-weight:850;letter-spacing:-.04em;margin:5px 0}.metric-note{font-size:12px;color:var(--muted)}.icon{float:right;font-size:22px}.card h3{margin:0 0 12px;font-size:16px}.muted{color:var(--muted)}.empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:14px}.bar-row{display:grid;grid-template-columns:minmax(90px,1fr) 2fr 40px;gap:10px;align-items:center;margin:12px 0;font-size:13px}.bar-track{height:9px;background:#edf0f6;border-radius:20px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#356ae6,#61b9e8);border-radius:20px}.tag{display:inline-block;padding:4px 8px;border-radius:20px;background:var(--blue2);color:#3158ad;font-size:11px;font-weight:800}.tag.free{background:#e6f7f2;color:#187f70}.tag.paid{background:#fff2d9;color:#986510}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-size:12px;white-space:nowrap}td strong{display:block}td .sub{color:var(--muted);font-size:11px}.table-wrap{overflow-x:auto}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800;color:#47536a}.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid #dce1eb;border-radius:11px;background:#fff;color:var(--ink)}.field textarea{min-height:88px;resize:vertical}.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.notice{background:#fff8e9;border:1px solid #f5dfad;border-radius:13px;padding:12px 14px;color:#72541c;font-size:12px;margin:12px 0}.insight{border-left:4px solid var(--blue);padding:10px 12px;background:#f6f8ff;border-radius:0 12px 12px 0;margin:10px 0;font-size:14px}.insight.good{border-color:var(--teal);background:#f0fbf8}.insight.warn{border-color:var(--gold);background:#fffaf0}.insight h4{margin:0 0 4px;font-size:14px}.insight p{margin:0}.pill-list{display:flex;flex-wrap:wrap;gap:7px}.pill{background:#f0f2f8;border-radius:30px;padding:7px 10px;font-size:12px}.chart{height:230px;width:100%;display:block}.footer{font-size:11px;color:var(--muted);text-align:center;margin-top:22px}.hidden{display:none!important}
+@media(max-width:760px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.section-head{align-items:center}.card{padding:15px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.metric-value{font-size:26px}th,td{padding:10px 8px}.bar-row{grid-template-columns:90px 1fr 30px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="eyebrow">CREATOR WORKSPACE</div><h1>📊 note Analytics AI</h1><p>アクセス・反応・売上を記録して、次の記事づくりに活かす。</p>
+<div class="top-actions"><button id="quickAdd">＋ 記事を登録</button><button class="secondary" id="exportBtn">データを書き出す</button><button class="secondary" id="importBtn">バックアップを読み込む</button><input id="importFile" type="file" accept="application/json" class="hidden"></div>
+</div></header>
+<nav>
+<button class="active" data-view="dashboard">📈 ダッシュボード</button><button data-view="articles">📝 記事管理</button><button data-view="entry">✍️ 数字を記録</button><button data-view="analysis">🤖 AI分析</button><button data-view="settings">⚙️ 設定・データ</button>
+</nav>
+<main>
+<section id="dashboard" class="view active">
+<div class="section-head"><div><h2>運営ダッシュボード</h2><p id="rangeLabel">登録したデータの概要</p></div><button class="secondary" id="demoBtn">サンプルデータを入れる</button></div>
+<div class="grid metrics">
+<div class="card"><span class="icon">👀</span><div class="metric-label">最新PV合計</div><div class="metric-value" id="mPv">0</div><div class="metric-note">各記事の最新記録の合計</div></div>
+<div class="card"><span class="icon">🪟</span><div class="metric-label">インプレッション</div><div class="metric-value" id="mImp">0</div><div class="metric-note">各記事の最新記録の合計</div></div>
+<div class="card"><span class="icon">❤️</span><div class="metric-label">スキ合計</div><div class="metric-value" id="mLikes">0</div><div class="metric-note">各記事の最新記録の合計</div></div>
+<div class="card"><span class="icon">💰</span><div class="metric-label">売上（入力値）</div><div class="metric-value" id="mSales">¥0</div><div class="metric-note">販売数 × 販売価格の累計ではなく最新記録</div></div>
+</div>
+<div class="grid two" style="margin-top:14px">
+<div class="card"><h3>🏆 記事別PVランキング</h3><div id="rankChart"></div></div>
+<div class="card"><h3>🗓️ 記録の推移</h3><canvas id="trendChart" class="chart" width="700" height="260"></canvas><div class="muted" style="font-size:11px">入力した記録をもとに表示します。記録が少ない場合は線が少なくなります。</div></div>
+</div>
+<div class="grid two" style="margin-top:14px">
+<div class="card"><h3>🧭 テーマ別のPV</h3><div id="themeChart"></div></div>
+<div class="card"><h3>📝 最近の記録</h3><div id="recentRecords"></div></div>
+</div>
+</section>
+
+<section id="articles" class="view">
+<div class="section-head"><div><h2>記事管理</h2><p>記事を登録し、テーマ・公開日・価格を管理します。</p></div><button id="addArticleBtn">＋ 新しい記事</button></div>
+<div class="card"><div class="table-wrap"><table><thead><tr><th>記事</th><th>テーマ</th><th>形式</th><th>最新PV</th><th>最新スキ</th><th>操作</th></tr></thead><tbody id="articleRows"></tbody></table></div><div id="articleEmpty" class="empty">まだ記事がありません。「新しい記事」から登録してください。</div></div>
+</section>
+
+<section id="entry" class="view">
+<div class="section-head"><div><h2>数字を記録</h2><p>noteのアクセス状況を見ながら、記事ごとの数値を入力します。</p></div></div>
+<div class="card">
+<form id="recordForm"><div class="form-grid">
+<div class="field"><label for="recordArticle">記事</label><select id="recordArticle" required></select></div>
+<div class="field"><label for="recordDate">集計日</label><input id="recordDate" type="date" required></div>
+<div class="field"><label for="recordImp">インプレッション</label><input id="recordImp" type="number" min="0" placeholder="例：13"></div>
+<div class="field"><label for="recordPv">ページビュー（PV）</label><input id="recordPv" type="number" min="0" placeholder="例：9"></div>
+<div class="field"><label for="recordLikes">スキ数（累計）</label><input id="recordLikes" type="number" min="0" placeholder="例：2"></div>
+<div class="field"><label for="recordSalesCount">購入数（累計）</label><input id="recordSalesCount" type="number" min="0" placeholder="例：1"></div>
+<div class="field"><label for="recordRevenue">売上・受取額（円）</label><input id="recordRevenue" type="number" min="0" placeholder="不明なら空欄"></div>
+<div class="field"><label for="recordNote">メモ</label><input id="recordNote" type="text" placeholder="例：Xで紹介した"></div>
+</div><div class="form-actions"><button type="submit">記録を保存</button><button type="button" class="secondary" id="clearRecord">入力をクリア</button></div></form>
+<div class="notice">数値は手入力です。note側の表示項目や集計方法と一致するよう、同じ指標を継続して記録してください。購入数・売上は必要に応じて入力します。</div>
+</div>
+<div class="card" style="margin-top:14px"><h3>記録履歴</h3><div class="table-wrap"><table><thead><tr><th>日付</th><th>記事</th><th>IMP</th><th>PV</th><th>スキ</th><th>購入</th><th>売上/受取額</th><th></th></tr></thead><tbody id="recordRows"></tbody></table></div><div id="recordEmpty" class="empty">まだ記録がありません。</div></div>
+</section>
+
+<section id="analysis" class="view">
+<div class="section-head"><div><h2>AI分析・改善提案</h2><p>保存された数字から傾向を整理します。外部AIに自動送信はしません。</p></div><button id="analyzeBtn">分析を更新</button></div>
+<div class="notice">この初期版の分析は、入力済みデータを使ったルールベースの自動分析です。ChatGPTやClaudeへの通信・API料金は発生しません。データが少ない場合は「まだ判断できない」と表示します。</div>
+<div class="grid two"><div class="card"><h3>🔎 データから見えること</h3><div id="analysisFindings"></div></div><div class="card"><h3>💡 次の記事への提案</h3><div id="analysisIdeas"></div></div></div>
+<div class="card" style="margin-top:14px"><h3>📋 分析用まとめ（コピーできます）</h3><p class="muted" style="font-size:13px">必要ならこのまとめをChatGPTやClaudeに貼り付けて、追加分析を依頼できます。個人情報や機密情報は含めないでください。</p><textarea id="analysisExport" style="width:100%;min-height:140px;border:1px solid var(--line);border-radius:12px;padding:12px"></textarea><div class="form-actions"><button id="copyAnalysis">分析文をコピー</button></div></div>
+</section>
+
+<section id="settings" class="view">
+<div class="section-head"><div><h2>設定・データ管理</h2><p>データはこのブラウザ内に保存されます。</p></div></div>
+<div class="grid two">
+<div class="card"><h3>💾 バックアップ</h3><p class="muted" style="font-size:13px">端末の変更やブラウザのデータ消去に備えて、定期的にJSONを書き出してください。別端末とは自動同期されません。</p><div class="form-actions"><button id="settingsExport">JSONを書き出す</button><button class="secondary" id="settingsImport">JSONを読み込む</button></div></div>
+<div class="card"><h3>🧹 データをリセット</h3><p class="muted" style="font-size:13px">登録した記事・記録をすべて削除します。実行前にバックアップをおすすめします。</p><button class="danger" id="resetBtn">すべてのデータを削除</button></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>このアプリについて</h3><p style="font-size:13px">note Analytics AI は、noteのアクセス状況を手入力で記録・比較するためのローカルアプリです。note公式アカウントへのログイン、アクセスデータの自動取得、記事の自動公開は行いません。記録したデータは端末のブラウザ内に保存されます。</p></div>
+</section>
+<div class="footer">note Analytics AI · ローカル保存版 · データは自分でバックアップしてください</div>
+</main>
+
+<dialog id="articleDialog" style="border:0;border-radius:18px;padding:0;width:min(560px,calc(100% - 28px));box-shadow:0 20px 70px #0c183855">
+<div style="padding:20px"><div class="section-head"><div><h2 id="dialogTitle">記事を登録</h2><p>記事情報を入力してください。</p></div><button type="button" class="secondary" id="closeDialog">閉じる</button></div>
+<form id="articleForm"><input id="editId" type="hidden"><div class="form-grid">
+<div class="field full"><label for="articleTitle">記事タイトル</label><input id="articleTitle" required maxlength="160" placeholder="例：AIを使って仕事を効率化する方法"></div>
+<div class="field"><label for="articleTheme">テーマ</label><select id="articleTheme"><option>AI × ゲーム制作</option><option>AI × 仕事効率化</option><option>AI × note運営</option><option>AIツールの使い方</option><option>その他</option></select></div>
+<div class="field"><label for="articleType">形式</label><select id="articleType"><option value="無料">無料</option><option value="有料">有料</option></select></div>
+<div class="field"><label for="articleDate">公開日</label><input id="articleDate" type="date"></div>
+<div class="field"><label for="articlePrice">販売価格（円）</label><input id="articlePrice" type="number" min="0" placeholder="無料なら0"></div>
+<div class="field full"><label for="articleUrl">記事URL（任意）</label><input id="articleUrl" type="url" placeholder="https://note.com/..."></div>
+</div><div class="form-actions"><button type="submit">保存する</button><button type="button" class="secondary" id="cancelArticle">キャンセル</button></div></form></div>
+</dialog>
+<script>
+const KEY='noteAnalyticsAI_v1';
+let state={articles:[],records:[]};
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toLocaleDateString('sv-SE');
+const fmt=n=>Number(n||0).toLocaleString('ja-JP');
+const yen=n=>'¥'+fmt(n);
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.articles)&&Array.isArray(s.records))state=s}catch(e){console.warn(e)}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function latest(aid){return state.records.filter(r=>r.articleId===aid).sort((a,b)=>b.date.localeCompare(a.date))[0]||{}}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function nav(view){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===view));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='analysis')renderAnalysis();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>nav(b.dataset.view));
+function addArticle(){ $('articleForm').reset();$('editId').value='';$('dialogTitle').textContent='記事を登録';$('articleDate').value=today();$('articlePrice').value=0;$('articleDialog').showModal()}
+function render(){
+ const arts=state.articles;
+ $('articleEmpty').classList.toggle('hidden',arts.length>0);
+ $('articleRows').innerHTML=arts.map(a=>{const l=latest(a.id);return `<tr><td><strong>${esc(a.title)}</strong><div class="sub">${esc(a.date||'公開日未設定')}</div>${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" class="sub">記事を開く ↗</a>`:''}</td><td>${esc(a.theme)}</td><td><span class="tag ${a.type==='無料'?'free':'paid'}">${esc(a.type)}${a.type==='有料'?' '+yen(a.price):''}</span></td><td>${fmt(l.pv)}</td><td>${fmt(l.likes)}</td><td><button class="small secondary" onclick="editArticle('${a.id}')">編集</button> <button class="small danger" onclick="deleteArticle('${a.id}')">削除</button></td></tr>`}).join('');
+ $('recordArticle').innerHTML=arts.map(a=>`<option value="${a.id}">${esc(a.title)}</option>`).join('');
+ $('recordForm').querySelector('button[type=submit]').disabled=!arts.length;
+ $('recordEmpty').classList.toggle('hidden',state.records.length>0);
+ const recs=[...state.records].sort((a,b)=>b.date.localeCompare(a.date));
+ $('recordRows').innerHTML=recs.map(r=>{const a=arts.find(x=>x.id===r.articleId);return `<tr><td>${esc(r.date)}</td><td>${esc(a?.title||'削除済み記事')}</td><td>${r.imp==null?'—':fmt(r.imp)}</td><td>${r.pv==null?'—':fmt(r.pv)}</td><td>${r.likes==null?'—':fmt(r.likes)}</td><td>${r.salesCount==null?'—':fmt(r.salesCount)}</td><td>${r.revenue==null?'—':yen(r.revenue)}</td><td><button class="small danger" onclick="deleteRecord('${r.id}')">削除</button></td></tr>`}).join('');
+ const sums=arts.map(a=>latest(a.id));$('mPv').textContent=fmt(sums.reduce((s,r)=>s+Number(r.pv||0),0));$('mImp').textContent=fmt(sums.reduce((s,r)=>s+Number(r.imp||0),0));$('mLikes').textContent=fmt(sums.reduce((s,r)=>s+Number(r.likes||0),0));$('mSales').textContent=yen(sums.reduce((s,r)=>s+Number(r.revenue||0),0));
+ $('rankChart').innerHTML=bars(arts.map(a=>({label:a.title,value:Number(latest(a.id).pv||0)})).sort((a,b)=>b.value-a.value).slice(0,6));
+ const themes={};arts.forEach(a=>themes[a.theme]=(themes[a.theme]||0)+Number(latest(a.id).pv||0));$('themeChart').innerHTML=bars(Object.entries(themes).map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value));
+ $('recentRecords').innerHTML=recs.slice(0,5).map(r=>`<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:13px"><strong>${esc(arts.find(a=>a.id===r.articleId)?.title||'削除済み記事')}</strong><div class="muted">${esc(r.date)} · PV ${fmt(r.pv)} · スキ ${fmt(r.likes)}</div></div>`).join('')||'<div class="empty">まだ記録がありません。</div>';
+ drawTrend();renderAnalysis();
+}
+function bars(items){if(!items.length)return '<div class="empty">記事を登録して数字を記録すると表示されます。</div>';const max=Math.max(1,...items.map(x=>x.value));return items.map(x=>`<div class="bar-row"><div title="${esc(x.label)}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.label)}</div><div class="bar-track"><div class="bar" style="width:${Math.max(0,x.value/max*100)}%"></div></div><strong>${fmt(x.value)}</strong></div>`).join('')}
+function drawTrend(){const c=$('trendChart'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);const dates=[...new Set(state.records.map(r=>r.date))].sort().slice(-14);if(!dates.length){ctx.fillStyle='#687386';ctx.font='18px sans-serif';ctx.textAlign='center';ctx.fillText('記録を追加すると推移が表示されます',w/2,h/2);return}const vals=dates.map(d=>state.records.filter(r=>r.date===d).reduce((s,r)=>s+Number(r.pv||0),0)),max=Math.max(1,...vals);ctx.strokeStyle='#e5e9f1';ctx.lineWidth=1;for(let i=0;i<5;i++){let y=20+i*(h-55)/4;ctx.beginPath();ctx.moveTo(44,y);ctx.lineTo(w-12,y);ctx.stroke()}ctx.strokeStyle='#356ae6';ctx.lineWidth=4;ctx.beginPath();vals.forEach((v,i)=>{let x=50+i*(w-75)/Math.max(1,vals.length-1),y=20+(h-55)*(1-v/max);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();vals.forEach((v,i)=>{let x=50+i*(w-75)/Math.max(1,vals.length-1),y=20+(h-55)*(1-v/max);ctx.fillStyle='#356ae6';ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();if(i===0||i===vals.length-1||dates.length<6){ctx.fillStyle='#687386';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText(dates[i].slice(5),x,h-10)}})}
+function editArticle(id){const a=state.articles.find(x=>x.id===id);if(!a)return;$('articleForm').reset();$('editId').value=a.id;$('articleTitle').value=a.title;$('articleTheme').value=a.theme;$('articleType').value=a.type;$('articleDate').value=a.date||'';$('articlePrice').value=a.price||0;$('articleUrl').value=a.url||'';$('dialogTitle').textContent='記事を編集';$('articleDialog').showModal()}
+function deleteArticle(id){if(!confirm('この記事と関連する記録を削除しますか？'))return;state.articles=state.articles.filter(a=>a.id!==id);state.records=state.records.filter(r=>r.articleId!==id);save()}
+function deleteRecord(id){if(!confirm('この記録を削除しますか？'))return;state.records=state.records.filter(r=>r.id!==id);save()}
+$('addArticleBtn').onclick=addArticle;$('quickAdd').onclick=()=>{nav('articles');addArticle()};
+$('closeDialog').onclick=$('cancelArticle').onclick=()=>$('articleDialog').close();
+$('articleForm').onsubmit=e=>{e.preventDefault();const id=$('editId').value||uid(),old=state.articles.find(a=>a.id===id);const a={id,title:$('articleTitle').value.trim(),theme:$('articleTheme').value,type:$('articleType').value,date:$('articleDate').value,price:Number($('articlePrice').value||0),url:$('articleUrl').value.trim()};if(old)state.articles=state.articles.map(x=>x.id===id?a:x);else state.articles.push(a);$('articleDialog').close();save();nav('articles')};
+$('recordDate').value=today();
+$('recordForm').onsubmit=e=>{e.preventDefault();const articleId=$('recordArticle').value;if(!articleId){alert('先に記事を登録してください');return}const date=$('recordDate').value;const existing=state.records.find(r=>r.articleId===articleId&&r.date===date);const rec={id:existing?.id||uid(),articleId,date,imp:numOrNull('recordImp'),pv:numOrNull('recordPv'),likes:numOrNull('recordLikes'),salesCount:numOrNull('recordSalesCount'),revenue:numOrNull('recordRevenue'),note:$('recordNote').value.trim()};if(existing)state.records=state.records.map(r=>r.id===existing.id?rec:r);else state.records.push(rec);save();alert('記録を保存しました。同じ記事・同じ日付の記録は上書きされます。');nav('entry')};
+function numOrNull(id){const v=$(id).value;return v===''?null:Math.max(0,Number(v))}
+$('clearRecord').onclick=()=>{$('recordForm').reset();$('recordDate').value=today()};
+function renderAnalysis(){
+ const arts=state.articles, recs=state.records;let findings=[],ideas=[];
+ if(!arts.length){findings.push(['まずは記事を登録','記事タイトル・テーマ・無料/有料を登録し、毎日の数値を入力してください。','warn']);ideas.push(['分析できるデータを集める','記事を2〜3本登録して、同じ指標を数日記録すると比較しやすくなります。',''])}
+ else{
+ const withData=arts.map(a=>({...a,...latest(a.id)})).filter(a=>a.pv!=null||a.imp!=null);
+ if(withData.length<2)findings.push(['比較データがまだ少ない','少なくとも2記事の数字を入力すると、記事ごとの傾向を比較できます。','warn']);
+ if(withData.length){const ranked=[...withData].sort((a,b)=>Number(b.pv||0)-Number(a.pv||0));findings.push(['最新PVが最も多い記事',`${ranked[0].title}（PV ${fmt(ranked[0].pv)}）。ただし公開日や記録期間が違う場合、単純比較には注意が必要です。`,'good']);const ctr=withData.filter(a=>Number(a.imp)>0&&a.pv!=null).map(a=>({...a,ratio:Number(a.pv)/Number(a.imp)}));if(ctr.length){const best=[...ctr].sort((a,b)=>b.ratio-a.ratio)[0];findings.push(['PV ÷ インプレッションの参考値が高い記事',`${best.title}（約${Math.round(best.ratio*100)}%）。指標の定義や集計期間が一致している場合に限り、参考値として見てください。`,''])}}
+ const totalRecords=new Set(recs.map(r=>r.date)).size;if(totalRecords<3)findings.push(['まだ公開直後の可能性があります','記録日が少ないため、今は大きな結論を出さず、数日〜1週間ほど継続して比較するのがおすすめです。','warn']);
+ const themeCounts={};arts.forEach(a=>{const l=latest(a.id);themeCounts[a.theme]=(themeCounts[a.theme]||0)+Number(l.pv||0)});const themes=Object.entries(themeCounts).sort((a,b)=>b[1]-a[1]);if(themes.length)ideas.push(['テーマ別に次の企画を試す',`現在の記録では「${themes[0][0]}」の最新PV合計が ${fmt(themes[0][1])} です。公開日と記録数も確認し、同じテーマで切り口を変えた記事を試してみましょう。`,'good']);
+ const paid=arts.filter(a=>a.type==='有料');if(paid.length){const sold=paid.reduce((s,a)=>s+Number(latest(a.id).salesCount||0),0);ideas.push(['有料記事はPVと購入数をセットで確認',`登録済みの有料記事は${paid.length}本、最新記録の購入数の合計は${sold}です。購入数が未入力の記事は、実績ゼロではなく未記録の可能性があります。`,''])}
+ ideas.push(['次に試すこと','①タイトルとテーマを記録する → ②同じ指標を毎日入力する → ③3〜7日後に変化を比較する。1回の数字だけでタイトルやテーマの良し悪しを決めないようにしましょう。','']);
+ }
+ $('analysisFindings').innerHTML=findings.map(x=>`<div class="insight ${x[2]}"><h4>${esc(x[0])}</h4><p>${esc(x[1])}</p></div>`).join('');
+ $('analysisIdeas').innerHTML=ideas.map(x=>`<div class="insight ${x[2]}"><h4>${esc(x[0])}</h4><p>${esc(x[1])}</p></div>`).join('');
+ const summary={articles:arts.map(a=>({title:a.title,theme:a.theme,type:a.type,price:a.price,published:a.date,latest:latest(a.id)})),recordCount:recs.length,dates:[...new Set(recs.map(r=>r.date))].sort()};$('analysisExport').value='以下は私のnote運営データです。数字から読み取れる傾向と、データ不足による注意点を分けて、次の記事企画を3つ提案してください。断定しすぎず、公開日や記録数の違いも考慮してください。\\n'+JSON.stringify(summary,null,2);
+}
+$('analyzeBtn').onclick=renderAnalysis;
+$('copyAnalysis').onclick=async()=>{try{await navigator.clipboard.writeText($('analysisExport').value);alert('コピーしました')}catch(e){$('analysisExport').select();document.execCommand('copy');alert('コピーしました')}};
+function exportData(){const blob=new Blob([JSON.stringify({...state,exportedAt:new Date().toISOString(),app:'note Analytics AI'},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='note-analytics-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
+$('exportBtn').onclick=$('settingsExport').onclick=exportData;
+$('importBtn').onclick=$('settingsImport').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.articles)||!Array.isArray(d.records))throw Error();if(!confirm('現在のデータを読み込んだデータで置き換えますか？'))return;state={articles:d.articles,records:d.records};save();alert('読み込みました')}catch(err){alert('読み込みに失敗しました。対応するJSONバックアップを選んでください。')}e.target.value=''};
+$('resetBtn').onclick=()=>{if(confirm('本当にすべてのデータを削除しますか？この操作は元に戻せません。')){state={articles:[],records:[]};save()}};
+$('demoBtn').onclick=()=>{if(state.articles.length&&!confirm('サンプルデータを追加します。既存データは削除しません。続けますか？'))return;const a1={id:uid(),title:'AIで作ったゲームを公開するまで',theme:'AI × ゲーム制作',type:'無料',date:today(),price:0,url:''},a2={id:uid(),title:'AIを使って仕事を効率化する方法',theme:'AI × 仕事効率化',type:'有料',date:today(),price:300,url:''};state.articles.push(a1,a2);state.records.push({id:uid(),articleId:a1.id,date:today(),imp:13,pv:9,likes:2,salesCount:null,revenue:null,note:'サンプルデータ'},{id:uid(),articleId:a2.id,date:today(),imp:8,pv:3,likes:1,salesCount:0,revenue:0,note:'サンプルデータ'});save();alert('サンプルを追加しました。実データを入れる前に削除するか、設定からリセットしてください。')};
+load();render();
+</script>
+</body></html>
